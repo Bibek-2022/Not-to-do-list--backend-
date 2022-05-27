@@ -5,7 +5,7 @@ const TaskSchema = new mongoose.Schema(
     task: {
       type: String,
       required: true,
-      minlength: 3,
+      minLength: [3, "Task is too short"],
     },
     hr: {
       type: Number,

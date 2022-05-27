@@ -15,7 +15,6 @@ const weeklyHrs = 24 * 7;
 
 const App = () => {
   const [taskList, setTaskList] = useState([]);
-  // const [badList, setBadList] = useState([]);
 
   const [response, setResponse] = useState({ status: "", message: "" });
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +34,10 @@ const App = () => {
   const badList = taskList.filter((item) => item.taskType === "badList");
   const entryList = taskList.filter((item) => item.taskType === "taskList");
 
+  const ttlHrBadList = badList.reduce((acc, item) => acc + item.hr, 0);
+  const ttlHrEntryList = entryList.reduce((acc, item) => acc + item.hr, 0);
+  const totalHRs = ttlHrBadList + ttlHrEntryList;
+
   // remove item form the task list
   //@ids is an array
   const removeFromTaskList = async (ids) => {
@@ -48,8 +51,6 @@ const App = () => {
         : setResponse(result);
     }
   };
-  // remove item form the bad list
-  const removeFromBadList = (i) => {};
 
   const switchTask = async (obj) => {
     const result = await updateTask(obj);
@@ -58,23 +59,8 @@ const App = () => {
     result.status === "success" && fetchData();
   };
 
-  // from bad list to task list
-  const shiftToTaskList = (i) => {};
-
-  const taskListTotalHr = taskList.reduce((acc, item) => acc + item.hr, 0);
-  const badListTotalHr = badList.reduce((acc, item) => acc + item.hr, 0);
-  const ttlHRs = taskListTotalHr + badListTotalHr;
-
-  // const addToTaskList = newInfo => {
-  // 	if (ttlHRs + newInfo.hr <= weeklyHrs) {
-  // 		setTaskList([...taskList, newInfo]);
-  // 	} else {
-  // 		alert("You have exceeded the weekly limit of " + weeklyHrs + "hrs");
-  // 	}
-  // };
-
   const addToTaskList = async (newInfo) => {
-    if (ttlHRs + newInfo.hr <= weeklyHrs) {
+    if (totalHRs + newInfo.hr <= weeklyHrs) {
       // call api to send data to server;
       setIsLoading(true);
 
@@ -130,9 +116,10 @@ const App = () => {
           <Col md="6">
             <BadList
               badList={badList}
-              removeFromBadList={removeFromBadList}
+              removeFromTaskList={removeFromTaskList}
               switchTask={switchTask}
-              badListTotalHr={badListTotalHr}
+              handleOnSelectItem={handleOnSelectItem}
+              ttlHrBadList={ttlHrBadList}
             />
           </Col>
         </Row>
@@ -151,7 +138,7 @@ const App = () => {
         <Row>
           <Col>
             <h3 className="mt-5">
-              The total allocated hours is: {ttlHRs}
+              The total allocated hours is: {totalHRs}
               hrs
             </h3>
           </Col>

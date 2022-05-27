@@ -3,9 +3,10 @@ import { Button, Col, Form, Row, Table } from "react-bootstrap";
 
 export const BadList = ({
   badList,
-  removeFromBadList,
+  removeFromTaskList,
   switchTask,
-  badListTotalHr,
+  handleOnSelectItem,
+  ttlHrBadList,
 }) => {
   return (
     <div>
@@ -18,7 +19,11 @@ export const BadList = ({
           {badList.map((item, i) => (
             <tr key={i}>
               <td>
-                <Form.Check type="checkbox" />
+                <Form.Check
+                  value={item?._id}
+                  onClick={handleOnSelectItem}
+                  type="checkbox"
+                />
               </td>
               <td>{item.task}</td>
               <td>{item.hr}hrs</td>
@@ -31,7 +36,10 @@ export const BadList = ({
                 >
                   <i className="fa-solid fa-arrow-left-long"></i>
                 </Button>{" "}
-                <Button variant="danger" onClick={() => removeFromBadList(i)}>
+                <Button
+                  variant="danger"
+                  onClick={() => removeFromTaskList([item._id])}
+                >
                   <i className="fa-solid fa-trash-can"></i>
                 </Button>
               </td>
@@ -41,7 +49,7 @@ export const BadList = ({
       </Table>
 
       <h4 className="mt-4 text-danger">
-        You could have saved: {badListTotalHr}hrs
+        You could have saved: {ttlHrBadList}hrs
       </h4>
     </div>
   );

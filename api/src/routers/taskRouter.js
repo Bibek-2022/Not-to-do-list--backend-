@@ -18,18 +18,24 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  console.log(req.body);
-  const result = await insertTask(req.body);
-  console.log(result);
-  result?._id
-    ? res.json({
-        status: "success",
-        message: "Task added successful",
-      })
-    : res.json({
-        status: "error",
-        message: "Task Failed",
-      });
+  try {
+    const result = await insertTask(req.body);
+
+    result?._id
+      ? res.json({
+          status: "success",
+          message: "Task added successful",
+        })
+      : res.json({
+          status: "error",
+          message: "Task Failed",
+        });
+  } catch (error) {
+    res.json({
+      status: "error",
+      message: error.message,
+    });
+  }
 });
 
 router.patch("/", async (req, res) => {
